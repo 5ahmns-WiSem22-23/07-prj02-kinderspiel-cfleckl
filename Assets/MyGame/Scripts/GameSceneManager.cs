@@ -3,7 +3,17 @@ using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoBehaviour
 {
-    public static string winner;
+    public enum Item
+    {
+        Fish,
+        Boat
+    }
+
+    public static Item currentWinner;
+
+    public int moveAmount;
+
+    public static int fishCount;
 
     public GameObject redFish;
     public GameObject blueFish;
@@ -11,83 +21,102 @@ public class GameSceneManager : MonoBehaviour
     public GameObject yellowFish;
     public GameObject boat;
 
-    public float maxXDistance;
+    private void Start()
+    {
+        fishCount = 4;
+    }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             RollDice();
-            Debug.Log("asdfghjkl");
         }
     }
 
     void MoveItem(GameObject item)
     {
-        item.transform.position = new Vector3(item.transform.position.x + 2, item.transform.position.y, item.transform.position.z);
+        item.transform.position = new Vector3(item.transform.position.x + moveAmount, item.transform.position.y, item.transform.position.z);
     }
 
-    void CheckFishProgress(GameObject fish)
+    public void GameOver(Item winner)
     {
-        if(fish.transform.position.x >= maxXDistance)
-        {
-            winner = "fish";
-            SceneManager.LoadScene("StartScene");
-        }
+        currentWinner = winner;
+        SceneManager.LoadScene("Endscene");
     }
 
-    void RollDice ()
+    void RollDice()
     {
         int random = Random.Range(1, 7);
 
-        switch (random)
-        {
+        switch (random){
             case 1:
-                //red
-                MoveItem(redFish);
-                CheckFishProgress(redFish);
+                // Red
+                try {
+                    MoveItem(redFish);
+                }
+                catch
+                {
+                    RollDice();
+                }
                 break;
 
             case 2:
-                //blue
-                MoveItem(blueFish);
-                CheckFishProgress(blueFish);
+                // Blue
+                try
+                {
+                    MoveItem(blueFish);
+                }
+                catch
+                {
+                    RollDice();
+                }
                 break;
 
             case 3:
-                //green
-                MoveItem(greenFish);
-                CheckFishProgress(greenFish);
+                // Green
+                try
+                {
+                    MoveItem(greenFish);
+                }
+                catch
+                {
+                    RollDice();
+                }
                 break;
 
             case 4:
-                //yellow
-                MoveItem(yellowFish);
-                CheckFishProgress(yellowFish);
+                // Yellow
+                try
+                {
+                    MoveItem(yellowFish);
+                }
+                catch
+                {
+                    RollDice();
+                }
                 break;
 
             case 5:
-                //boat
+                // Boat
                 MoveItem(boat);
-                CheckFishProgress(boat);
                 break;
 
             case 6:
-                //boat
+                // Boat
                 MoveItem(boat);
-                CheckFishProgress(boat);
                 break;
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void CheckForWin()
     {
-        if (collision.gameObject.CompareTag("Fish"))
-        {
-            winner = "boat";
-            SceneManager.LoadScene("EndScene");
-           
-        }
-    }
+        fishCount--;
 
+        if (fishCount <= 0)
+        {
+            GameOver(Item.Boat);
+        }
+
+    }
 }

@@ -8,12 +8,12 @@ public class EndSceneManager : MonoBehaviour
 
     private void Start()
     {
-        status.text = GameSceneManager.winner == "Boat" ? "Das Boot hat gewonnen" : "Die Fische haben gewonnen";
+        status.text = GameSceneManager.currentWinner == GameSceneManager.Item.Boat ? "Das Boot hat gewonnen" :
+            GameSceneManager.fishCount <= 2 ? "Unentschieden" : "Die Fische haben gewonnen";
     }
-
 
     public void PressRestart()
     {
-        SceneManager.LoadScene("StartScene");
+        SceneManager.LoadScene("GameScene");
     }
 }
